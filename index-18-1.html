@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEHAR HUB — Project Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --accent: #2563eb;
+  --accent2: #ef4444;
+  --accent3: #f59e0b;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --team-accent: #7c3aed;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+#cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transition: transform 0.1s;
+  mix-blend-mode: exclusion;
+}
+#cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: transform 0.15s, width 0.2s, height 0.2s;
+  mix-blend-mode: exclusion;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.4;
+}
+
+/* NAVBAR */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: rgba(5,5,8,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 28px;
+  color: var(--accent);
+  letter-spacing: 4px;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+.nav-admin-btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 8px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: none;
+  transition: all 0.3s;
+}
+
+.nav-admin-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* HERO PARALLAX */
+#hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(500px) rotateX(20deg) scale(1.5);
+  transform-origin: bottom;
+  animation: gridFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes gridFloat {
+  from { transform: perspective(500px) rotateX(20deg) scale(1.5) translateY(0); }
+  to { transform: perspective(500px) rotateX(20deg) scale(1.5) translateY(-20px); }
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.orb1 { width: 400px; height: 400px; background: rgba(37,99,235,0.12); top: -100px; left: -100px; animation: orbFloat 6s ease-in-out infinite; }
+.orb2 { width: 300px; height: 300px; background: rgba(239,68,68,0.08); bottom: -50px; right: 10%; animation: orbFloat 8s ease-in-out infinite reverse; }
+.orb3 { width: 200px; height: 200px; background: rgba(245,158,11,0.08); top: 40%; left: 50%; animation: orbFloat 5s ease-in-out infinite 2s; }
+
+@keyframes orbFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 6px 16px;
+  margin-bottom: 30px;
+  animation: fadeUp 0.8s ease forwards;
+  opacity: 0;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(80px, 15vw, 200px);
+  line-height: 0.85;
+  letter-spacing: -2px;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+  opacity: 0;
+}
+
+.hero-title span { color: var(--accent); }
+.hero-title .slash { color: var(--accent2); }
+
+.hero-sub {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 3px;
+  margin-top: 20px;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+  opacity: 0;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  animation: fadeUp 0.8s ease 0.8s forwards;
+  opacity: 0;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%,100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.3; transform: scaleY(0.7); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MARQUEE */
+.marquee-wrap {
+  background: #111827;
+  padding: 14px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-inner {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
+
+.marquee-inner span {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: #ffffff;
+  padding: 0 40px;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* SECTIONS */
+.section {
+  padding: 100px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(40px, 6vw, 80px);
+  line-height: 1;
+  margin-bottom: 60px;
+}
+
+/* PROJECTS GRID */
+#projects { background: var(--surface); }
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2px;
+}
+
+.project-card {
+  background: var(--card);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  border: 1px solid var(--border);
+  cursor: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.project-card:hover::before { opacity: 0.05; }
+.project-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+
+.card-num {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 60px;
+  color: var(--border);
+  position: absolute;
+  top: 20px; right: 30px;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.project-card:hover .card-num { color: var(--accent); opacity: 0.3; }
+
+.card-logo {
+  width: 56px; height: 56px;
+  background: var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 22px;
+  color: var(--accent);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.card-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tag {
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 2px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border: none;
+  cursor: none;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn-primary:hover { background: #00cc6e; }
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+/* STATS SECTION */
+#stats {
+  padding: 80px 60px;
+  background: var(--bg);
+}
+
+.stats-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.stat-box {
+  background: var(--card);
+  padding: 50px 40px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 72px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+/* PARALLAX STRIP */
+.parallax-strip {
+  height: 400px;
+  background: 
+    linear-gradient(rgba(245,246,250,0.85), rgba(245,246,250,0.85)),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(37,99,235,0.05) 40px,
+      rgba(37,99,235,0.05) 80px
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-text {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(60px, 10vw, 140px);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(37,99,235,0.2);
+  letter-spacing: 8px;
+  white-space: nowrap;
+  animation: slideText 15s linear infinite;
+  position: absolute;
+}
+
+@keyframes slideText {
+  from { transform: translateX(100vw); }
+  to { transform: translateX(-100%); }
+}
+
+/* CHAT WIDGET */
+#chat-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 5000;
+}
+
+.chat-toggle {
+  width: 60px; height: 60px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  font-size: 24px;
+  box-shadow: 0 0 30px rgba(0,255,136,0.4);
+  transition: transform 0.3s;
+  position: relative;
+}
+
+.chat-toggle:hover { transform: scale(1.1); }
+
+.chat-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  width: 18px; height: 18px;
+  background: var(--accent2);
+  border-radius: 50%;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Space Mono', monospace;
+  display: none;
+}
+
+.chat-box {
+  position: absolute;
+  bottom: 75px;
+  right: 0;
+  width: 340px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.chat-box.open { display: flex; }
+
+.chat-header {
+  background: var(--card);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); }
+}
+
+.chat-header-text { font-size: 13px; font-weight: 700; }
+.chat-header-sub { font-size: 10px; color: var(--accent); }
+
+.chat-messages {
+  height: 300px;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
+
+.msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 2px;
+}
+
+.msg.visitor {
+  background: var(--card);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+}
+
+.msg.admin {
+  background: var(--accent);
+  color: var(--bg);
+  align-self: flex-end;
+}
+
+.msg-meta {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.chat-input-wrap {
+  display: flex;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 14px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.chat-input::placeholder { color: var(--muted); }
+
+.chat-send {
+  background: var(--accent);
+  border: none;
+  padding: 0 18px;
+  cursor: none;
+  color: var(--bg);
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.chat-send:hover { background: #00cc6e; }
+
+/* NAME PROMPT */
+.name-prompt {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.name-prompt input {
+  background: var(--card);
+  border: 1px solid var(--border);
+  outline: none;
+  padding: 10px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  width: 100%;
+}
+
+.name-prompt input:focus { border-color: var(--accent); }
+
+/* MODALS */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 50px;
+  width: 440px;
+  max-width: 90vw;
+  position: relative;
+  animation: modalIn 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.modal-sub {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+}
+
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  outline: none;
+  padding: 14px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  transition: border-color 0.3s;
+}
+
+.form-input:focus { border-color: var(--accent); }
+
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: none;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--text); }
+
+.admin-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.choice-card {
+  padding: 24px 20px;
+  border: 1px solid var(--border);
+  cursor: none;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.choice-card:hover, .choice-card.active {
+  border-color: var(--accent);
+  background: rgba(0,255,136,0.05);
+}
+
+.choice-card.team-choice:hover, .choice-card.team-choice.active {
+  border-color: var(--team-accent);
+  background: rgba(124,58,237,0.05);
+}
+
+.choice-icon { font-size: 32px; margin-bottom: 10px; }
+.choice-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; }
+.choice-desc { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* ADMIN PANELS */
+#admin-panel, #team-panel {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 8000;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#admin-panel.open, #team-panel.open { display: flex; }
+
+.panel-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 16px 30px;
+  gap: 20px;
+}
+
+.panel-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 24px;
+  color: var(--accent);
+  letter-spacing: 3px;
+}
+
+.panel-logo.team { color: var(--team-accent); }
+
+.panel-tabs {
+  display: flex;
+  gap: 4px;
+  margin-left: 20px;
+}
+
+.panel-tab {
+  padding: 8px 18px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  cursor: none;
+  transition: all 0.2s;
+}
+
+.panel-tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.panel-tab.team-tab.active {
+  border-color: var(--team-accent);
+  color: var(--team-accent);
+}
+
+.panel-close {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 16px;
+  font-size: 11px;
+  cursor: none;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+
+.panel-close:hover { border-color: var(--accent2); color: var(--accent2); }
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+}
+
+.panel-tab-content { display: none; }
+.panel-tab-content.active { display: block; }
+
+/* ADMIN TABLE */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.admin-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.table-logo {
+  width: 36px; height: 36px;
+  background: var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue';
+  font-size: 14px;
+  color: var(--accent);
+}
+
+/* CHAT ADMIN */
+.admin-chat-wrap {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2px;
+  height: calc(100vh - 180px);
+}
+
+.chat-sessions {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.session-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: none;
+  transition: background 0.2s;
+}
+
+.session-item:hover, .session-item.active { background: rgba(0,255,136,0.05); }
+.session-item.active { border-left: 2px solid var(--accent); }
+
+.session-name { font-size: 13px; font-weight: 700; }
+.session-preview { font-size: 11px; color: var(--muted); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+.admin-chat-main {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-chat-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.admin-chat-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-chat-input-wrap {
+  display: flex;
+  border-top: 1px solid var(--border);
+  padding: 12px;
+  gap: 10px;
+}
+
+.admin-chat-input {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  outline: none;
+  padding: 12px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.admin-chat-input:focus { border-color: var(--accent); }
+
+/* TEAM THEME PANEL */
+.theme-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.theme-option {
+  padding: 20px;
+  border: 1px solid var(--border);
+  cursor: none;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.theme-option:hover, .theme-option.selected {
+  border-color: var(--team-accent);
+}
+
+.theme-option.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px; right: 10px;
+  color: var(--team-accent);
+  font-size: 14px;
+}
+
+.theme-preview {
+  height: 60px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.theme-name { font-size: 13px; font-weight: 700; }
+.theme-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ADD PROJECT FORM */
+.add-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 800px;
+}
+
+.add-form .full { grid-column: 1 / -1; }
+
+.panel-section-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 28px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.panel-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 12px 24px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  z-index: 99999;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* FOOTER */
+footer {
+  background: #111827;
+  border-top: 1px solid var(--border);
+  padding: 60px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 60px;
+  color: #ffffff;
+  letter-spacing: 8px;
+  line-height: 1;
+}
+
+.footer-sub {
+  font-size: 11px;
+  color: #9ca3af;
+  letter-spacing: 3px;
+  margin-top: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+  .section { padding: 60px 20px; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .admin-chat-wrap { grid-template-columns: 1fr; }
+  .add-form { grid-template-columns: 1fr; }
+  .admin-choice { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">MH</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#stats">Stats</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-admin-btn" onclick="openAdminLogin()">⚡ ADMIN</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+  <div class="hero-content" id="hero-parallax">
+    <div class="hero-tag">— PROJECT VAULT —</div>
+    <h1 class="hero-title">
+      MEHAR<br>
+      <span>HUB</span>
+    </h1>
+    <p class="hero-sub">PLATFORM DIRECTORY // ALL PROJECTS // ALL LINKS</p>
+  </div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span>92JEETO</span>
+    <span>LAM APP</span>
+    <span>DECLOX</span>
+    <span>ROYALBET</span>
+    <span>SFM PLATFORM</span>
+    <span>EARNPK</span>
+    <span>TASKDUB</span>
+    <span>92JEETO</span>
+    <span>LAM APP</span>
+    <span>DECLOX</span>
+    <span>ROYALBET</span>
+    <span>SFM PLATFORM</span>
+    <span>EARNPK</span>
+    <span>TASKDUB</span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section">
+    <div class="section-label">// 001 — PROJECTS</div>
+    <h2 class="section-title">ALL PLATFORMS</h2>
+    <div class="projects-grid" id="projects-grid">
+      <!-- Loaded from JS -->
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-inner">
+    <div class="stat-box">
+      <div class="stat-num" id="stat-projects">0</div>
+      <div class="stat-label">Projects Live</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">PK</div>
+      <div class="stat-label">Market</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Uptime Goal</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="stat-team">0</div>
+      <div class="stat-label">Team Members</div>
+    </div>
+  </div>
+</div>
+
+<!-- PARALLAX STRIP -->
+<div class="parallax-strip">
+  <div class="parallax-text">BUILD // DEPLOY // DOMINATE // BUILD // DEPLOY // DOMINATE //</div>
+</div>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-logo">MEHAR HUB</div>
+  <div class="footer-sub">ALL RIGHTS RESERVED // PAKISTAN</div>
+</footer>
+
+<!-- CHAT WIDGET -->
+<div id="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()" id="chat-toggle-btn">
+    💬
+    <span class="chat-badge" id="chat-badge">0</span>
+  </button>
+  <div class="chat-box" id="chat-box">
+    <div class="chat-header">
+      <div class="chat-dot"></div>
+      <div>
+        <div class="chat-header-text">MEHAR HUB SUPPORT</div>
+        <div class="chat-header-sub">● ONLINE — We reply fast</div>
+      </div>
+    </div>
+    <div id="chat-name-section">
+      <div class="name-prompt">
+        <p style="font-size:12px;color:var(--muted);">Enter your name to start chatting:</p>
+        <input type="text" class="form-input" id="visitor-name-input" placeholder="Your name..." />
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="startChat()">START CHAT</button>
+      </div>
+    </div>
+    <div id="chat-main-section" style="display:none;flex-direction:column;flex:1;">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-wrap">
+        <input class="chat-input" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()" />
+        <button class="chat-send" onclick="sendMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+    <div class="modal-title">ACCESS PANEL</div>
+    <div class="modal-sub">SELECT YOUR ROLE</div>
+    <div class="admin-choice">
+      <div class="choice-card" id="choice-super" onclick="selectRole('super')">
+        <div class="choice-icon">👑</div>
+        <div class="choice-title">SUPER ADMIN</div>
+        <div class="choice-desc">Full access</div>
+      </div>
+      <div class="choice-card team-choice" id="choice-team" onclick="selectRole('team')">
+        <div class="choice-icon">👥</div>
+        <div class="choice-title">TEAM ADMIN</div>
+        <div class="choice-desc">Limited access</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">PASSWORD</label>
+      <input type="password" class="form-input" id="admin-password" placeholder="Enter password..." onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="doLogin()">⚡ LOGIN</button>
+  </div>
+</div>
+
+<!-- SUPER ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="panel-nav">
+    <div class="panel-logo">⚡ SUPER ADMIN</div>
+    <div class="panel-tabs">
+      <button class="panel-tab active" onclick="switchTab('admin','projects')">PROJECTS</button>
+      <button class="panel-tab" onclick="switchTab('admin','add')">ADD NEW</button>
+      <button class="panel-tab" onclick="switchTab('admin','chat')">CHAT <span id="admin-chat-badge" style="color:var(--accent2)"></span></button>
+      <button class="panel-tab" onclick="switchTab('admin','team')">TEAM MGMT</button>
+    </div>
+    <button class="panel-close" onclick="closeAdminPanel()">✕ CLOSE</button>
+  </div>
+  <div class="panel-body">
+    <!-- PROJECTS TAB -->
+    <div class="panel-tab-content active" id="admin-tab-projects">
+      <div class="panel-section-title">ALL PROJECTS</div>
+      <table class="admin-table" id="admin-projects-table">
+        <thead>
+          <tr>
+            <th>Logo</th><th>Name</th><th>Description</th><th>Link</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-projects-body"></tbody>
+      </table>
+    </div>
+    <!-- ADD TAB -->
+    <div class="panel-tab-content" id="admin-tab-add">
+      <div class="panel-section-title">ADD PROJECT</div>
+      <div class="add-form">
+        <div class="form-group">
+          <label class="form-label">PROJECT NAME</label>
+          <input type="text" class="form-input" id="new-name" placeholder="92JEETO" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">STATUS</label>
+          <select class="form-input" id="new-status" style="cursor:none;">
+            <option value="live">🟢 LIVE</option>
+            <option value="dev">🟡 IN DEV</option>
+            <option value="paused">🔴 PAUSED</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">DESCRIPTION</label>
+          <input type="text" class="form-input" id="new-desc" placeholder="Short description..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">LIVE LINK</label>
+          <input type="text" class="form-input" id="new-link" placeholder="https://..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">DOWNLOAD LINK</label>
+          <input type="text" class="form-input" id="new-dl" placeholder="https://..." />
+        </div>
+        <div class="form-group full">
+          <label class="form-label">TAGS (comma separated)</label>
+          <input type="text" class="form-input" id="new-tags" placeholder="Casino, Pakistan, HTML" />
+        </div>
+        <div class="form-group full">
+          <label class="form-label">LOGO URL (optional)</label>
+          <input type="text" class="form-input" id="new-logo" placeholder="https://... or leave blank" />
+        </div>
+        <div class="form-group full">
+          <button class="btn btn-primary" style="padding:14px 40px;" onclick="addProject()">+ ADD PROJECT</button>
+        </div>
+      </div>
+    </div>
+    <!-- CHAT TAB -->
+    <div class="panel-tab-content" id="admin-tab-chat">
+      <div class="panel-section-title">LIVE CHAT</div>
+      <div class="admin-chat-wrap">
+        <div class="chat-sessions" id="admin-sessions"></div>
+        <div class="admin-chat-main">
+          <div class="admin-chat-header" id="admin-chat-title">Select a conversation</div>
+          <div class="admin-chat-msgs" id="admin-chat-msgs"></div>
+          <div class="admin-chat-input-wrap">
+            <input class="admin-chat-input" id="admin-reply-input" placeholder="Type reply..." onkeydown="if(event.key==='Enter')adminReply()" />
+            <button class="btn btn-primary" onclick="adminReply()">SEND</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- TEAM MGMT TAB -->
+    <div class="panel-tab-content" id="admin-tab-team">
+      <div class="panel-section-title">TEAM MANAGEMENT</div>
+      <div style="max-width:500px;">
+        <div class="form-group">
+          <label class="form-label">TEAM ADMIN PASSWORD</label>
+          <input type="text" class="form-input" id="team-pw-display" value="" placeholder="Current team password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">SET NEW TEAM PASSWORD</label>
+          <input type="password" class="form-input" id="new-team-pw" placeholder="New password..." />
+        </div>
+        <button class="btn btn-primary" onclick="updateTeamPassword()">UPDATE PASSWORD</button>
+        <div style="margin-top:40px;">
+          <div class="panel-section-title" style="font-size:20px;">TEAM MEMBERS</div>
+          <div id="team-members-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM ADMIN PANEL -->
+<div id="team-panel">
+  <div class="panel-nav">
+    <div class="panel-logo team">👥 TEAM ADMIN</div>
+    <div class="panel-tabs">
+      <button class="panel-tab team-tab active" onclick="switchTab('team','projects')">PROJECTS</button>
+      <button class="panel-tab team-tab" onclick="switchTab('team','chat')">CHAT</button>
+      <button class="panel-tab team-tab" onclick="switchTab('team','theme')">THEME</button>
+    </div>
+    <button class="panel-close" onclick="closeTeamPanel()">✕ CLOSE</button>
+  </div>
+  <div class="panel-body">
+    <!-- PROJECTS VIEW -->
+    <div class="panel-tab-content active" id="team-tab-projects">
+      <div class="panel-section-title">VIEW PROJECTS</div>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Logo</th><th>Name</th><th>Description</th><th>Status</th><th>Links</th></tr>
+        </thead>
+        <tbody id="team-projects-body"></tbody>
+      </table>
+    </div>
+    <!-- CHAT -->
+    <div class="panel-tab-content" id="team-tab-chat">
+      <div class="panel-section-title">LIVE CHAT</div>
+      <div class="admin-chat-wrap">
+        <div class="chat-sessions" id="team-sessions"></div>
+        <div class="admin-chat-main">
+          <div class="admin-chat-header" id="team-chat-title">Select a conversation</div>
+          <div class="admin-chat-msgs" id="team-chat-msgs"></div>
+          <div class="admin-chat-input-wrap">
+            <input class="admin-chat-input" id="team-reply-input" placeholder="Type reply..." onkeydown="if(event.key==='Enter')teamReply()" />
+            <button class="btn btn-primary" style="background:var(--team-accent);" onclick="teamReply()">SEND</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- THEME -->
+    <div class="panel-tab-content" id="team-tab-theme">
+      <div class="panel-section-title">THEME SETTINGS</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:30px;">Change the website's accent colour. Changes apply instantly.</p>
+      <div class="theme-picker" id="theme-picker"></div>
+      <div style="margin-top:20px;display:flex;align-items:center;gap:16px;">
+        <label class="form-label" style="margin:0;">CUSTOM COLOR:</label>
+        <input type="color" id="custom-color" value="#00ff88" style="width:50px;height:40px;border:1px solid var(--border);background:transparent;cursor:none;" oninput="applyThemeColor(this.value)" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======== STATE ========
+let state = {
+  projects: [
+    { id: 1, name: '92JEETO', desc: 'Casino platform with Wingo, Aviator & Zoo Roulette. Pakistani market.', link: '#', dl: '#', tags: ['Casino','Pakistan','HTML'], logo: '', status: 'live' },
+    { id: 2, name: 'LAM APP', desc: 'Task-based earning platform with VIP tiers and referral system.', link: '#', dl: '#', tags: ['Earning','React','Supabase'], logo: '', status: 'live' },
+    { id: 3, name: 'DECLOX', desc: 'Investment & referral platform with three-level commissions.', link: '#', dl: '#', tags: ['Investment','HTML','Supabase'], logo: '', status: 'live' },
+    { id: 4, name: 'ROYALBET', desc: '10+ casino games including crash, slots, and Teen Patti.', link: '#', dl: '#', tags: ['Casino','HTML','Games'], logo: '', status: 'dev' },
+    { id: 5, name: 'SFM PLATFORM', desc: 'Smart Financial Market with spin-and-win and investment packages.', link: '#', dl: '#', tags: ['Finance','HTML'], logo: '', status: 'live' },
+    { id: 6, name: 'EARNPK', desc: 'Earning platform with task system and withdrawal flow.', link: '#', dl: '#', tags: ['Earning','Pakistan'], logo: '', status: 'paused' },
+  ],
+  chats: {}, // { sessionId: { name, messages: [] } }
+  activeSession: null,
+  teamActiveSession: null,
+  visitorName: '',
+  visitorSession: null,
+  teamPassword: 'Team989888',
+  superPassword: 'rA989888',
+  currentTheme: '#2563eb',
+  themes: [
+    { name: 'NEON GREEN', color: '#00ff88', bg: 'linear-gradient(135deg,#00ff88,#00cc6e)' },
+    { name: 'CYBER RED', color: '#ff3366', bg: 'linear-gradient(135deg,#ff3366,#cc0033)' },
+    { name: 'GOLD', color: '#ffcc00', bg: 'linear-gradient(135deg,#ffcc00,#cc9900)' },
+    { name: 'PURPLE', color: '#7c3aed', bg: 'linear-gradient(135deg,#7c3aed,#5b21b6)' },
+    { name: 'CYAN', color: '#00cfff', bg: 'linear-gradient(135deg,#00cfff,#0099cc)' },
+    { name: 'ORANGE', color: '#ff6600', bg: 'linear-gradient(135deg,#ff6600,#cc4400)' },
+  ],
+  selectedRole: 'super',
+  unreadChats: 0,
+};
+
+// ======== JSONBIN CONFIG ========
+const JSONBIN_KEY = '$2a$10$GruyT6OWiaTTle5yKIDZ6.dQj5PO.0I65e.Gd/pZGI2gdUW.J/loq';
+const JSONBIN_BASE = 'https://api.jsonbin.io/v3';
+let BIN_ID = localStorage.getItem('meharhub_bin_id') || null;
+
+async function loadState() {
+  showLoader(true);
+  try {
+    if (!BIN_ID) {
+      const res = await fetch(JSONBIN_BASE + '/b', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': JSONBIN_KEY,
+          'X-Bin-Name': 'meharhub',
+          'X-Bin-Private': 'true'
+        },
+        body: JSON.stringify({
+          projects: state.projects,
+          chats: {},
+          teamPassword: state.teamPassword,
+          currentTheme: state.currentTheme,
+        })
+      });
+      const data = await res.json();
+      BIN_ID = data.metadata.id;
+      localStorage.setItem('meharhub_bin_id', BIN_ID);
+    } else {
+      const res = await fetch(JSONBIN_BASE + '/b/' + BIN_ID + '/latest', {
+        headers: { 'X-Master-Key': JSONBIN_KEY }
+      });
+      const data = await res.json();
+      const record = data.record;
+      state.projects = record.projects || state.projects;
+      state.chats = record.chats || {};
+      state.teamPassword = record.teamPassword || state.teamPassword;
+      state.currentTheme = record.currentTheme || state.currentTheme;
+    }
+  } catch(e) {
+    console.error('JSONBin load error:', e);
+    showToast('Cloud load failed, using local data.');
+  }
+  applyThemeColor(state.currentTheme, false);
+  showLoader(false);
+}
+
+let saveTimer = null;
+function saveState() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await fetch(JSONBIN_BASE + '/b/' + BIN_ID, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': JSONBIN_KEY
+        },
+        body: JSON.stringify({
+          projects: state.projects,
+          chats: state.chats,
+          teamPassword: state.teamPassword,
+          currentTheme: state.currentTheme,
+        })
+      });
+    } catch(e) {
+      console.error('JSONBin save error:', e);
+    }
+  }, 800);
+}
+
+function showLoader(show) {
+  let el = document.getElementById('global-loader');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'global-loader';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;height:3px;background:var(--accent);z-index:99999;transition:opacity 0.4s;';
+    document.body.appendChild(el);
+  }
+  el.style.opacity = show ? '1' : '0';
+}
+
+// ======== CURSOR ========
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 6 + 'px';
+  cursor.style.top = my - 6 + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx - 18 + 'px';
+  ring.style.top = ry - 18 + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// ======== PARALLAX ========
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const hero = document.getElementById('hero-parallax');
+  if (hero) hero.style.transform = `translateY(${scrollY * 0.4}px)`;
+  const grid = document.querySelector('.hero-bg-grid');
+  if (grid) grid.style.transform = `perspective(500px) rotateX(20deg) scale(1.5) translateY(${scrollY * 0.2}px)`;
+});
+
+// ======== RENDER PROJECTS ========
+function renderProjects() {
+  const grid = document.getElementById('projects-grid');
+  grid.innerHTML = state.projects.map((p, i) => `
+    <div class="project-card" style="animation: fadeUp 0.5s ease ${i * 0.1}s both;">
+      <div class="card-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="card-logo">${p.logo ? `<img src="${p.logo}" alt="${p.name}" />` : p.name.slice(0,2)}</div>
+      <div class="card-title">${p.name}</div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div style="margin-bottom:16px;">
+        <span style="font-size:10px;letter-spacing:2px;padding:4px 12px;background:${p.status==='live'?'#dcfce7':p.status==='dev'?'#fef9c3':'#fee2e2'};color:${p.status==='live'?'#16a34a':p.status==='dev'?'#ca8a04':'#dc2626'};border-radius:20px;font-weight:700;">
+          ${p.status==='live'?'● LIVE':p.status==='dev'?'● IN DEV':'● PAUSED'}
+        </span>
+      </div>
+      <div class="card-actions">
+        ${p.link && p.link !== '#'
+          ? `<a href="${p.link}" target="_blank" rel="noopener" class="btn btn-primary">↗ VISIT</a>`
+          : `<span class="btn btn-primary" style="opacity:0.35;cursor:not-allowed;">↗ VISIT</span>`}
+        ${p.dl && p.dl !== '#'
+          ? `<a href="${p.dl}" target="_blank" rel="noopener" class="btn btn-outline">⬇ DOWNLOAD</a>`
+          : `<span class="btn btn-outline" style="opacity:0.35;cursor:not-allowed;">⬇ DOWNLOAD</span>`}
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('stat-projects').textContent = state.projects.length;
+  renderAdminProjects();
+  renderTeamProjects();
+}
+
+// ======== ADMIN PROJECTS ========
+function renderAdminProjects() {
+  const tbody = document.getElementById('admin-projects-body');
+  if (!tbody) return;
+  tbody.innerHTML = state.projects.map(p => `
+    <tr>
+      <td><div class="table-logo">${p.logo ? `<img src="${p.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />` : p.name.slice(0,2)}</div></td>
+      <td style="font-weight:700;">${p.name}</td>
+      <td style="color:var(--muted);font-size:11px;max-width:200px;">${p.desc}</td>
+      <td><a href="${p.link}" target="_blank" style="color:var(--accent);font-size:11px;">↗ Open</a></td>
+      <td><span style="font-size:10px;color:${p.status==='live'?'#00ff88':p.status==='dev'?'#ffcc00':'#ff3366'}">${p.status.toUpperCase()}</span></td>
+      <td>
+        <button class="btn btn-outline" style="font-size:10px;padding:6px 12px;" onclick="deleteProject(${p.id})">✕ DELETE</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderTeamProjects() {
+  const tbody = document.getElementById('team-projects-body');
+  if (!tbody) return;
+  tbody.innerHTML = state.projects.map(p => `
+    <tr>
+      <td><div class="table-logo">${p.name.slice(0,2)}</div></td>
+      <td style="font-weight:700;">${p.name}</td>
+      <td style="color:var(--muted);font-size:11px;">${p.desc}</td>
+      <td><span style="font-size:10px;color:${p.status==='live'?'#00ff88':'#ffcc00'}">${p.status.toUpperCase()}</span></td>
+      <td style="display:flex;gap:8px;">
+        ${p.link !== '#' ? `<a href="${p.link}" target="_blank" class="btn btn-outline" style="font-size:10px;padding:6px 12px;">↗ VISIT</a>` : ''}
+        ${p.dl !== '#' ? `<a href="${p.dl}" target="_blank" class="btn btn-primary" style="font-size:10px;padding:6px 12px;">⬇ DL</a>` : ''}
+      </td>
+    </tr>
+  `).join('');
+}
+
+function addProject() {
+  const name = document.getElementById('new-name').value.trim();
+  if (!name) { showToast('Enter project name!'); return; }
+  const link = document.getElementById('new-link').value.trim();
+  const dl = document.getElementById('new-dl').value.trim();
+  const p = {
+    id: Date.now(),
+    name: name.toUpperCase(),
+    desc: document.getElementById('new-desc').value.trim(),
+    link: link || '#',
+    dl: dl || '#',
+    tags: document.getElementById('new-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    logo: document.getElementById('new-logo').value.trim(),
+    status: document.getElementById('new-status').value,
+  };
+  state.projects.push(p);
+  saveState();
+  renderProjects();
+  showToast('✓ Project added! Visible to all.');
+  ['new-name','new-desc','new-link','new-dl','new-tags','new-logo'].forEach(id => document.getElementById(id).value = '');
+  // Switch to projects tab so user can see it
+  document.querySelectorAll('#admin-panel .panel-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#admin-panel .panel-tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector('#admin-panel .panel-tab').classList.add('active');
+  document.getElementById('admin-tab-projects').classList.add('active');
+}
+
+function deleteProject(id) {
+  if (!confirm('Delete this project?')) return;
+  state.projects = state.projects.filter(p => p.id !== id);
+  saveState();
+  renderProjects();
+  showToast('Project deleted.');
+}
+
+// ======== CHAT ========
+function toggleChat() {
+  const box = document.getElementById('chat-box');
+  box.classList.toggle('open');
+  if (box.classList.contains('open')) {
+    state.unreadChats = 0;
+    document.getElementById('chat-badge').style.display = 'none';
+  }
+}
+
+function startChat() {
+  const name = document.getElementById('visitor-name-input').value.trim();
+  if (!name) { showToast('Enter your name!'); return; }
+  state.visitorName = name;
+  state.visitorSession = 'session_' + Date.now();
+  if (!state.chats[state.visitorSession]) {
+    state.chats[state.visitorSession] = { name, messages: [] };
+  }
+  document.getElementById('chat-name-section').style.display = 'none';
+  document.getElementById('chat-main-section').style.display = 'flex';
+  addAutoReply();
+  renderVisitorChat();
+}
+
+function addAutoReply() {
+  const sid = state.visitorSession;
+  state.chats[sid].messages.push({
+    text: `Hi ${state.visitorName}! 👋 Welcome to Mehar Hub. How can we help you today?`,
+    sender: 'admin',
+    time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+  });
+  saveState();
+}
+
+function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const sid = state.visitorSession;
+  state.chats[sid].messages.push({
+    text, sender: 'visitor',
+    time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+  });
+  input.value = '';
+  saveState();
+  renderVisitorChat();
+  renderAdminChatSessions();
+  // Update badge on admin panel
+  const badge = document.getElementById('admin-chat-badge');
+  if (badge) badge.textContent = ' (!)';
+}
+
+function renderVisitorChat() {
+  const msgs = document.getElementById('chat-messages');
+  const sid = state.visitorSession;
+  if (!sid || !state.chats[sid]) return;
+  msgs.innerHTML = state.chats[sid].messages.map(m => `
+    <div class="msg ${m.sender}" style="flex-direction:column;">
+      <div>${m.text}</div>
+      <div class="msg-meta">${m.time}</div>
+    </div>
+  `).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function renderAdminChatSessions(panel = 'admin') {
+  const container = document.getElementById(panel === 'admin' ? 'admin-sessions' : 'team-sessions');
+  if (!container) return;
+  const sessions = Object.entries(state.chats);
+  if (!sessions.length) {
+    container.innerHTML = '<div style="padding:20px;font-size:12px;color:var(--muted);">No conversations yet.</div>';
+    return;
+  }
+  container.innerHTML = sessions.map(([sid, data]) => {
+    const last = data.messages[data.messages.length - 1];
+    const active = (panel === 'admin' ? state.activeSession : state.teamActiveSession) === sid;
+    return `
+      <div class="session-item ${active ? 'active' : ''}" onclick="openSession('${sid}','${panel}')">
+        <div class="session-name">${data.name}</div>
+        <div class="session-preview">${last ? last.text : 'No messages'}</div>
+        <div class="session-time">${last ? last.time : ''}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openSession(sid, panel) {
+  if (panel === 'admin') state.activeSession = sid;
+  else state.teamActiveSession = sid;
+  renderAdminChatSessions(panel);
+  const msgs = document.getElementById(panel === 'admin' ? 'admin-chat-msgs' : 'team-chat-msgs');
+  const title = document.getElementById(panel === 'admin' ? 'admin-chat-title' : 'team-chat-title');
+  const data = state.chats[sid];
+  title.textContent = data.name + ' — ' + data.messages.length + ' messages';
+  msgs.innerHTML = data.messages.map(m => `
+    <div class="msg ${m.sender === 'admin' ? 'admin' : 'visitor'}" style="flex-direction:column;">
+      <div>${m.text}</div>
+      <div class="msg-meta">${m.sender === 'admin' ? '(Admin)' : data.name} · ${m.time}</div>
+    </div>
+  `).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function adminReply() {
+  const input = document.getElementById('admin-reply-input');
+  reply(input, state.activeSession, 'admin');
+}
+
+function teamReply() {
+  const input = document.getElementById('team-reply-input');
+  reply(input, state.teamActiveSession, 'team');
+}
+
+function reply(input, sid, panel) {
+  if (!sid) { showToast('Select a conversation first!'); return; }
+  const text = input.value.trim();
+  if (!text) return;
+  state.chats[sid].messages.push({
+    text, sender: 'admin',
+    time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+  });
+  input.value = '';
+  saveState();
+  openSession(sid, panel);
+  renderAdminChatSessions(panel);
+  // If visitor is in same session, update their view
+  if (state.visitorSession === sid) {
+    renderVisitorChat();
+    if (!document.getElementById('chat-box').classList.contains('open')) {
+      document.getElementById('chat-badge').style.display = 'flex';
+    }
+  }
+}
+
+// ======== THEME ========
+function renderThemePicker() {
+  const picker = document.getElementById('theme-picker');
+  picker.innerHTML = state.themes.map(t => `
+    <div class="theme-option ${state.currentTheme === t.color ? 'selected' : ''}" onclick="applyThemeColor('${t.color}')">
+      <div class="theme-preview" style="background:${t.bg}"></div>
+      <div class="theme-name">${t.name}</div>
+      <div class="theme-desc">${t.color}</div>
+    </div>
+  `).join('');
+}
+
+function applyThemeColor(color, save = true) {
+  document.documentElement.style.setProperty('--accent', color);
+  state.currentTheme = color;
+  document.getElementById('custom-color').value = color;
+  if (save) { saveState(); renderThemePicker(); showToast('Theme updated!'); }
+}
+
+// ======== TEAM PASSWORD ========
+function updateTeamPassword() {
+  const newPw = document.getElementById('new-team-pw').value.trim();
+  if (!newPw || newPw.length < 4) { showToast('Password too short!'); return; }
+  state.teamPassword = newPw;
+  document.getElementById('team-pw-display').value = newPw;
+  document.getElementById('new-team-pw').value = '';
+  saveState();
+  showToast('✓ Team password updated!');
+}
+
+// ======== LOGIN ========
+let selectedRole = 'super';
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('choice-super').classList.toggle('active', role === 'super');
+  document.getElementById('choice-team').classList.toggle('active', role === 'team');
+}
+
+function doLogin() {
+  const pw = document.getElementById('admin-password').value;
+  if (selectedRole === 'super' && pw === state.superPassword) {
+    closeModal('login-modal');
+    document.getElementById('admin-panel').classList.add('open');
+    document.getElementById('team-pw-display').value = state.teamPassword; document.getElementById('team-pw-display').setAttribute('readonly','true');
+    renderAdminProjects();
+    renderAdminChatSessions('admin');
+    document.getElementById('stat-team').textContent = '1';
+  } else if (selectedRole === 'team' && pw === state.teamPassword) {
+    closeModal('login-modal');
+    document.getElementById('team-panel').classList.add('open');
+    renderTeamProjects();
+    renderAdminChatSessions('team');
+    renderThemePicker();
+  } else {
+    showToast('Wrong password!');
+    document.getElementById('admin-password').style.borderColor = 'var(--accent2)';
+    setTimeout(() => document.getElementById('admin-password').style.borderColor = '', 1000);
+  }
+  document.getElementById('admin-password').value = '';
+}
+
+function openAdminLogin() {
+  document.getElementById('login-modal').classList.add('open');
+  selectRole('super');
+}
+
+function closeAdminPanel() { document.getElementById('admin-panel').classList.remove('open'); }
+function closeTeamPanel() { document.getElementById('team-panel').classList.remove('open'); }
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ======== TABS ========
+function switchTab(panel, tab) {
+  const prefix = panel === 'admin' ? 'admin' : 'team';
+  document.querySelectorAll(`#${prefix}-panel .panel-tab`).forEach(t => t.classList.remove('active'));
+  document.querySelectorAll(`#${prefix}-panel .panel-tab-content`).forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  const content = document.getElementById(`${prefix}-tab-${tab}`);
+  if (content) {
+    content.classList.add('active');
+    if (tab === 'chat') renderAdminChatSessions(panel);
+  }
+}
+
+// ======== TOAST ========
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ======== STATS COUNTER ========
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const target = parseInt(el.textContent);
+    if (isNaN(target)) return;
+    let count = 0;
+    const step = Math.ceil(target / 30);
+    const timer = setInterval(() => {
+      count = Math.min(count + step, target);
+      el.textContent = count;
+      if (count >= target) clearInterval(timer);
+    }, 50);
+  });
+}
+
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); statsObserver.disconnect(); }});
+}, { threshold: 0.5 });
+
+const statsEl = document.getElementById('stats');
+if (statsEl) statsObserver.observe(statsEl);
+
+// ======== INIT ========
+loadState().then(() => {
+  renderProjects();
+  renderThemePicker();
+});
+
+// Poll cloud every 5s for real-time chat sync
+async function pollCloud() {
+  if (!BIN_ID) return;
+  try {
+    const res = await fetch(JSONBIN_BASE + '/b/' + BIN_ID + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY }
+    });
+    const data = await res.json();
+    const record = data.record;
+    state.chats = record.chats || state.chats;
+    state.projects = record.projects || state.projects;
+    state.teamPassword = record.teamPassword || state.teamPassword;
+    state.currentTheme = record.currentTheme || state.currentTheme;
+  } catch(e) {}
+
+  // Update UI if panels open
+  if (document.getElementById('admin-panel').classList.contains('open')) {
+    const activeTab = document.querySelector('#admin-panel .panel-tab-content.active');
+    if (activeTab && activeTab.id === 'admin-tab-chat') renderAdminChatSessions('admin');
+    if (state.activeSession) openSession(state.activeSession, 'admin');
+    if (activeTab && activeTab.id === 'admin-tab-projects') renderAdminProjects();
+  }
+  if (document.getElementById('team-panel').classList.contains('open')) {
+    const activeTab = document.querySelector('#team-panel .panel-tab-content.active');
+    if (activeTab && activeTab.id === 'team-tab-chat') renderAdminChatSessions('team');
+    if (state.teamActiveSession) openSession(state.teamActiveSession, 'team');
+  }
+  if (state.visitorSession) renderVisitorChat();
+
+  // Refresh main site projects
+  renderProjects();
+}
+setInterval(pollCloud, 5000);
+</script>
+</body>
+</html>
